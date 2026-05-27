@@ -51,7 +51,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = normalize_database_url(os.environ.get("D
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
-socketio = SocketIO(app, cors_allowed_origins=os.environ.get("CORS_ALLOWED_ORIGINS", "*"), async_mode="threading")
+socketio = SocketIO(
+    app,
+    cors_allowed_origins=os.environ.get("CORS_ALLOWED_ORIGINS", "*"),
+    async_mode="gevent",
+    ping_timeout=60,
+    ping_interval=20,
+)
 LOCAL_TIMEZONE_NOTE = "Local server timezone"
 
 
