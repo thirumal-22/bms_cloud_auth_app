@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMS Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: radial-gradient(circle at top, #064e3b 0, #020617 45%, #000 100%); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .glass { background: rgba(15, 23, 42, 0.86); backdrop-filter: blur(14px); }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 grid place-items-center p-4">
+  <div class="glass w-full max-w-md rounded-3xl border border-slate-800 p-8 shadow-2xl">
+    <div class="mb-6 text-center">
+      <div class="mx-auto mb-3 h-14 w-14 rounded-2xl bg-emerald-500/20 ring-1 ring-emerald-400/30 grid place-content-center text-3xl">🔋</div>
+      <h1 class="text-2xl font-black">BMS Secure Login</h1>
+      <p class="mono mt-1 text-xs text-slate-500">Authenticated cloud dashboard access</p>
+    </div>
+    <div id="errorBox" class="mb-4 hidden rounded-xl border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-200"></div>
+    <form id="loginForm" class="space-y-4">
+      <div><label class="mono mb-1 block text-xs uppercase tracking-widest text-slate-500">Username</label><input name="username" value="admin" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-emerald-400" required /></div>
+      <div><label class="mono mb-1 block text-xs uppercase tracking-widest text-slate-500">Password</label><input name="password" type="password" value="admin12345" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-emerald-400" required /></div>
+      <button class="w-full rounded-xl bg-emerald-600 px-4 py-3 font-black text-white hover:bg-emerald-500">Login</button>
+    </form>
+    <p class="mono mt-5 text-center text-xs text-slate-600">Default: admin / admin12345. Change env vars before public deployment.</p>
+  </div>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = Object.fromEntries(new FormData(e.target).entries());
+      const res = await fetch("/api/login", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (res.ok && data.ok) window.location.href = "/";
+      else { const box = document.getElementById("errorBox"); box.textContent = data.error || "Login failed"; box.classList.remove("hidden"); }
+    });
+  </script>
+</body>
+</html>
